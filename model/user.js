@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
     },
     profileImageURL:{
         type:String,
-        default:"/public/defaultProfile.jpg"
+        default:"defaultuserimage.jpg"
     },
     roll:{
         type:String,
@@ -39,16 +39,16 @@ userSchema.pre('save', async function(next){
     user.salt=salt;
     next();
    }
-   catch(err){
+   catch(err) {
     next(err);
    }
 }) 
- userSchema.static("matchPasswordAndgeneratetoken",async function(email,password){
+userSchema.static("matchPasswordAndgeneratetoken",async function(email,password){
     const user = await this.findOne({email})
     if(!user)  throw new Error("user not found");
-    const salt =user.salt;
+    const salt = user.salt;
     const hashpassword = user.password;
-     const userProvidedHash =await bcrypt.hash(password,salt)
+    const userProvidedHash =await bcrypt.hash(password,salt)
      if(hashpassword!==userProvidedHash) throw new Error("password not matched");
     //  return {...user._doc}
     const token = createTokenUser(user);
